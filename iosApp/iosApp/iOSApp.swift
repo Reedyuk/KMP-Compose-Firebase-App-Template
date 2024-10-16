@@ -5,6 +5,7 @@ import ComposeApp
 struct iOSApp: App {
     init() {
         KoinKt.doInitKoin()
+        MainViewControllerKt.setupFirebase()
     }
 
     var body: some Scene {
