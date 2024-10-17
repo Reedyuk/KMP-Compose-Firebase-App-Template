@@ -12,19 +12,12 @@ interface MuseumApi {
 }
 
 object KtorMuseumApi : MuseumApi {
-    override suspend fun getData(): List<MuseumObject> {
-        val collection = Firebase.firestore
-            .collection("art")
-            .get()
-        println(collection)
-        println(collection.metadata)
-
-        return Firebase.firestore
+    override suspend fun getData(): List<MuseumObject> =
+        Firebase.firestore
             .collection("art")
             .get()
             .documents
             .map {
                 it.data()
             }
-    }
 }

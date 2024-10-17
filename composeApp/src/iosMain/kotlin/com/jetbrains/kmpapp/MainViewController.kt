@@ -2,6 +2,7 @@ package com.jetbrains.kmpapp
 
 import androidx.compose.ui.window.ComposeUIViewController
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.FirebaseFirestoreSettings
 import dev.gitlive.firebase.firestore.LocalCacheSettings
 import dev.gitlive.firebase.firestore.firestore
@@ -14,6 +15,7 @@ fun MainViewController() = ComposeUIViewController {
 
 fun setupFirebase() {
     Firebase.initialize()
+    Firebase.auth.useEmulator("127.0.0.1", 9090)
     Firebase.firestore.settings = FirebaseFirestoreSettings(
         host = "127.0.0.1:8080",
         sslEnabled = false,

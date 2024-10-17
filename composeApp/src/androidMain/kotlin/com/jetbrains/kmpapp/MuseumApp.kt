@@ -13,10 +13,9 @@ import dev.gitlive.firebase.firestore.firestore
 class MuseumApp : Application() {
     override fun onCreate() {
         super.onCreate()
-//        FirebaseApp.initializeApp(this)
-//        Firebase.auth.useEmulator("10.0.2.2", 8080)
+        FirebaseApp.initializeApp(this)
+        Firebase.auth.useEmulator("10.0.2.2", 9090)
         Firebase.firestore.useEmulator("10.0.2.2", 8080)
-        Firebase.firestore.setSettings(false)
         initKoin()
     }
 }
