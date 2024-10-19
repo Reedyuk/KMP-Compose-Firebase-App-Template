@@ -15,11 +15,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,20 +38,26 @@ import com.jetbrains.kmpapp.data.MuseumObject
 import com.jetbrains.kmpapp.screens.EmptyScreenContent
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kmp_app_template.composeapp.generated.resources.Res
+import kmp_app_template.composeapp.generated.resources.login
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ListScreen(
-    navigateToDetails: (objectId: Int) -> Unit
+    navigateToDetails: (objectId: Int) -> Unit,
+    navigateToLogin: () -> Unit
 ) {
     val viewModel = koinViewModel<ListViewModel>()
     val objects by viewModel.objects.collectAsState()
+    val showLoginButton by viewModel.showLoginButton.collectAsState()
 
     AnimatedContent(objects.isNotEmpty()) { objectsAvailable ->
         if (objectsAvailable) {
             ObjectGrid(
                 objects = objects,
                 onObjectClick = navigateToDetails,
+                onLoginClick = navigateToLogin.takeIf { showLoginButton }
             )
         } else {
             EmptyScreenContent(Modifier.fillMaxSize())
@@ -57,22 +69,36 @@ fun ListScreen(
 private fun ObjectGrid(
     objects: List<MuseumObject>,
     onObjectClick: (Int) -> Unit,
+    onLoginClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(180.dp),
-        // TODO simplify padding after https://issuetracker.google.com/issues/365052672 is fixed
-        modifier = modifier
-            .fillMaxSize()
-            .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues()),
-        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Vertical)
-            .asPaddingValues(),
+    Scaffold(
+        topBar = {
+            TopAppBar(backgroundColor = MaterialTheme.colors.background) {
+                onLoginClick?.let {
+                    IconButton(onClick = it) {
+                        Text(stringResource(Res.string.login))
+                    }
+                }
+            }
+        },
+        modifier = modifier.windowInsetsPadding(WindowInsets.systemBars),
     ) {
-        items(objects, key = { it.objectID }) { obj ->
-            ObjectFrame(
-                obj = obj,
-                onClick = { onObjectClick(obj.objectID) },
-            )
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(180.dp),
+            // TODO simplify padding after https://issuetracker.google.com/issues/365052672 is fixed
+            modifier = modifier
+                .fillMaxSize()
+                .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues()),
+            contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Vertical)
+                .asPaddingValues(),
+            ) {
+            items(objects, key = { it.objectID }) { obj ->
+                ObjectFrame(
+                    obj = obj,
+                    onClick = { onObjectClick(obj.objectID) },
+                    )
+            }
         }
     }
 }

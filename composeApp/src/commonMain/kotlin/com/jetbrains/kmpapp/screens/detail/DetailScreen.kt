@@ -14,14 +14,10 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,11 +30,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.jetbrains.kmpapp.data.MuseumObject
+import com.jetbrains.kmpapp.screens.BackButton
 import com.jetbrains.kmpapp.screens.EmptyScreenContent
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kmp_app_template.composeapp.generated.resources.Res
-import kmp_app_template.composeapp.generated.resources.back
 import kmp_app_template.composeapp.generated.resources.label_artist
 import kmp_app_template.composeapp.generated.resources.label_credits
 import kmp_app_template.composeapp.generated.resources.label_date
@@ -76,9 +72,7 @@ private fun ObjectDetails(
     Scaffold(
         topBar = {
             TopAppBar(backgroundColor = MaterialTheme.colors.background) {
-                IconButton(onClick = onBackClick) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(Res.string.back))
-                }
+                BackButton(onClick = onBackClick)
             }
         },
         modifier = modifier.windowInsetsPadding(WindowInsets.systemBars),
