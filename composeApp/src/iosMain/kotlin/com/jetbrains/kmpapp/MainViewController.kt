@@ -15,7 +15,8 @@ fun MainViewController() = ComposeUIViewController {
 
 fun setupFirebase() {
     Firebase.initialize()
-    Firebase.auth.useEmulator("127.0.0.1", 9090)
+    // make sure these mappings to your ports are correct.
+    Firebase.auth.useEmulator("127.0.0.1", 9099)
     Firebase.firestore.settings = FirebaseFirestoreSettings(
         host = "127.0.0.1:8080",
         sslEnabled = false,
