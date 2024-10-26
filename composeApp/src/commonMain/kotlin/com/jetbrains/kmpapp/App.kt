@@ -68,6 +68,10 @@ fun App() {
                     SignUpScreen(
                         navigateBack = {
                             navController.popBackStack()
+                        },
+                        navigateUp = {
+                            navController.popBackStack()
+                            navController.popBackStack()
                         }
                     )
                 }

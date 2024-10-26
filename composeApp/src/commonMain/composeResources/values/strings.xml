@@ -13,6 +13,7 @@
 
     <string name="login">Login</string>
     <string name="signUp">Sign Up</string>
+    <string name="logout">Logout</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>

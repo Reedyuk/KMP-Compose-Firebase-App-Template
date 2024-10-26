@@ -38,12 +38,17 @@ import kmp_app_template.composeapp.generated.resources.Res
 import kmp_app_template.composeapp.generated.resources.email
 import kmp_app_template.composeapp.generated.resources.password
 import kmp_app_template.composeapp.generated.resources.signUp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SignUpScreen(
     navigateBack: () -> Unit,
+    navigateUp: () -> Unit
 ) {
     val viewModel = koinViewModel<SignUpViewModel>()
     val infoMessage by viewModel.userInfoMessage.collectAsState()
@@ -54,7 +59,13 @@ fun SignUpScreen(
             infoMessage = infoMessage,
             onBackClick = navigateBack,
             onSignUpClick = { email, password ->
-                viewModel.signUp(email, password)
+                CoroutineScope(Dispatchers.IO).launch {
+                    if (viewModel.signUp(email, password)) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            navigateUp()
+                        }
+                    }
+                }
             }
         )
     }

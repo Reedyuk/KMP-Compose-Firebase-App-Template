@@ -13,23 +13,22 @@ class LoginViewModel() : ViewModel() {
 
     val userInfoMessage: MutableStateFlow<String?> = MutableStateFlow(null)
 
-    fun login(email: String, password: String) {
+    suspend fun login(email: String, password: String): Boolean {
         userInfoMessage.tryEmit(null)
         if (email.isEmpty() || password.isEmpty()) {
             userInfoMessage.tryEmit("Please enter a valid email and password")
-            return
+            return false
         }
-        CoroutineScope(Dispatchers.IO).launch {
-            runCatching {
-                val status = Firebase.auth.signInWithEmailAndPassword(email, password)
-                if (status.user == null || status.user?.isAnonymous == true) {
-                    userInfoMessage.tryEmit("An error ocurred when trying to login, please try again.")
-                } else {
-                // dismiss login screen.
-                }
-            }.onFailure {
-                userInfoMessage.tryEmit(it.message ?: "ooops, something went wrong")
+        runCatching {
+            val status = Firebase.auth.signInWithEmailAndPassword(email, password)
+             if (status.user == null || status.user?.isAnonymous == true) {
+                userInfoMessage.tryEmit("An error ocurred when trying to login, please try again.")
+            } else {
+                return true
             }
+        }.onFailure {
+            userInfoMessage.tryEmit(it.message ?: "ooops, something went wrong")
         }
+        return false
     }
 }

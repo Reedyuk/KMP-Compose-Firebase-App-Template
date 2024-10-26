@@ -13,24 +13,23 @@ class SignUpViewModel() : ViewModel() {
 
     val userInfoMessage: MutableStateFlow<String?> = MutableStateFlow(null)
 
-    fun signUp(email: String, password: String) {
+    suspend fun signUp(email: String, password: String): Boolean {
         userInfoMessage.tryEmit(null)
         if (email.isEmpty() || password.isEmpty()) {
             userInfoMessage.tryEmit("Please enter a valid email and password")
-            return
+            return false
         }
-        CoroutineScope(Dispatchers.IO).launch {
-            runCatching {
-                val status = Firebase.auth.createUserWithEmailAndPassword(email, password)
-                if (status.user == null || status.user?.isAnonymous == true) {
-                    userInfoMessage.tryEmit("An error ocurred when trying to sign up, please try again.")
-                } else {
-                // dismiss signup screen.
-
-                }
-            }.onFailure {
-                userInfoMessage.tryEmit(it.message ?: "ooops, something went wrong")
+        runCatching {
+            val status = Firebase.auth.createUserWithEmailAndPassword(email, password)
+            if (status.user == null || status.user?.isAnonymous == true) {
+                userInfoMessage.tryEmit("An error ocurred when trying to sign up, please try again.")
+            } else {
+            // dismiss signup screen.
+                return true
             }
+        }.onFailure {
+            userInfoMessage.tryEmit(it.message ?: "ooops, something went wrong")
         }
+        return false
     }
 }

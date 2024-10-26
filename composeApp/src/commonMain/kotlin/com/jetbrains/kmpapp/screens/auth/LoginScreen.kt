@@ -49,6 +49,10 @@ import kmp_app_template.composeapp.generated.resources.email
 import kmp_app_template.composeapp.generated.resources.login
 import kmp_app_template.composeapp.generated.resources.password
 import kmp_app_template.composeapp.generated.resources.signUp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -68,7 +72,13 @@ fun LoginScreen(
             infoMessage = infoMessage,
             onBackClick = navigateBack,
             onLoginClick = { email, password ->
-                viewModel.login(email, password)
+                CoroutineScope(Dispatchers.IO).launch {
+                    if (viewModel.login(email, password)) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            navigateBack()
+                        }
+                    }
+                }
             },
             onSignUpClick = navigateToSignUp
         )

@@ -40,6 +40,7 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kmp_app_template.composeapp.generated.resources.Res
 import kmp_app_template.composeapp.generated.resources.login
+import kmp_app_template.composeapp.generated.resources.logout
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -57,7 +58,10 @@ fun ListScreen(
             ObjectGrid(
                 objects = objects,
                 onObjectClick = navigateToDetails,
-                onLoginClick = navigateToLogin.takeIf { showLoginButton }
+                onLoginClick = navigateToLogin.takeIf { showLoginButton },
+                onLogoutClick = {
+                    viewModel.logout()
+                }.takeUnless { showLoginButton }
             )
         } else {
             EmptyScreenContent(Modifier.fillMaxSize())
@@ -70,6 +74,7 @@ private fun ObjectGrid(
     objects: List<MuseumObject>,
     onObjectClick: (Int) -> Unit,
     onLoginClick: (() -> Unit)?,
+    onLogoutClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -78,6 +83,11 @@ private fun ObjectGrid(
                 onLoginClick?.let {
                     IconButton(onClick = it) {
                         Text(stringResource(Res.string.login))
+                    }
+                }
+                onLogoutClick?.let {
+                    IconButton(onClick = it) {
+                        Text(stringResource(Res.string.logout))
                     }
                 }
             }
